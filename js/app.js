@@ -15,22 +15,24 @@ let editando;
 //clases
 class Citas {
   constructor() {
-    this.citas = [];
+    this.citas = JSON.parse(localStorage.getItem("citasLocal")) || [];
+
+    cargarStorage(this.citas);
   }
 
   agregarCita(cita) {
     this.citas = [...this.citas, cita];
-
-    console.log(this.citas);
+    sincronizarStorage(this.citas);
   }
   eliminarCita(id) {
     this.citas = this.citas.filter((cita) => cita.id !== id);
-    console.log(this.citas);
+    sincronizarStorage(this.citas);
   }
   editarCita(citaEditada) {
     this.citas = this.citas.map((cita) =>
       cita.id === citaEditada.id ? citaEditada : cita
     );
+    sincronizarStorage(this.citas);
   }
 }
 class Interfaz {
@@ -263,4 +265,11 @@ function cargarEdicion(cita) {
     "Guardar Cambios";
 
   editando = true;
+}
+
+function sincronizarStorage(citas) {
+  localStorage.setItem("citasLocal", JSON.stringify(citas));
+}
+function cargarStorage(citas) {
+  interfaz.mostrarCitas({ citas });
 }
